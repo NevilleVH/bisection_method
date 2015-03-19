@@ -90,19 +90,22 @@ while cont == 'Y':
         continue
     
     #if the function is a polynomial, determine whether it has real roots <- only correct if tpt on same side as real roots (picks up complex roots)
-    
-    roots = has_roots(s)
-    if roots[0] or roots[1]:
-        print('Upper bounds for real roots: {} positive and {} negative'.format(roots[0], roots[1]))
-    elif s.find('math.') == -1 and f(0) != 0:
-            print('Your function has no real roots! Try another one.')
-            continue    
-    
-    #check if a function without real roots slipped through; generate initial values
-    x_0,x_1 = get_init_values()
+    try:
+        roots = has_roots(s)
+        if roots[0] or roots[1] or f(0) == 0:
+            print('Upper bounds for real roots (not counted with multiplicity): {} positive, {} at x = 0 and {} negative.'.format(roots[0], int(f(0) == 0), roots[1]))
+        elif s.find('math.') == -1:
+                print('Your function has no real roots! Try another one.')
+                continue    
+        
+        #check if a function without real roots slipped through; generate initial values
+        x_0,x_1 = get_init_values()
+    except:
+        print('Looks like your function is only non-negative or only non-positive. The bisection method cannot deal with these cases.')
+        continue
     
     if x_0 == x_1 == None: #loop terminated, couldn't cross x-axis
-        print('Either your function has no real roots or they\'re really far away. Try another one!')
+        print('Either your function has no real roots or they\'re really far from the origin. Try another one!')
         continue
     
     #bisect, iterate
